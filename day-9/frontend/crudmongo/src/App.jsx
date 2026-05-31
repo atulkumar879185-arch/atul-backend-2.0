@@ -7,7 +7,7 @@ const App = () => {
   const [note, setnote] = useState([])
 
   const fetchnote = (async () => {
-    const note = await axios.get('http://localhost:3000/detail')
+    const note = await axios.get('https://atul-backend-2-0.onrender.com/detail')
     setnote(note.data.data)
   })
   useEffect(() => {
@@ -19,7 +19,7 @@ const App = () => {
     e.preventDefault()
     const {name,course}=e.target
     console.log(name.value,course.value);
-    axios.post('http://localhost:3000/detail',{
+    axios.post('https://atul-backend-2-0.onrender.com/detail',{
       name:name.value,
       course:course.value
     })
@@ -34,7 +34,7 @@ const App = () => {
 
   const deletehandler=((noteid)=>{
     console.log(noteid)
-    axios.delete('http://localhost:3000/notedelete/'+noteid)
+    axios.delete('https://atul-backend-2-0.onrender.com/notedelete/'+noteid)
     .then(res=>{
       console.log(res.data)
       fetchnote()
