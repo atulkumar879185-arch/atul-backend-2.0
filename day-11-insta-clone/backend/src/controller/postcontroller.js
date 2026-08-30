@@ -1,4 +1,5 @@
 const postmodle = require('../model/postmodel')
+const identifyuser = require('../middleware/identifyuser')
 const jwt = require('jsonwebtoken')
 const cloudinary = require("cloudinary").v2;
 
@@ -16,25 +17,7 @@ async function createcontroller(req, res) {
             message: "Image is required"
         });
     }
-    let token;
-    try {
-        token = req.cookies.token
-    }
-    catch (error) {
-        return res.status(401).json({
-            message: "Unauthorized access please login first"
-        })
-    }
-    let decoded;
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
-    }
-    catch (error) {
-        return res.status(401).json({
-            message: "invalid token"
-        })
-    }
-
+    
     const result = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
             {
@@ -53,14 +36,14 @@ async function createcontroller(req, res) {
     });
 
     const post = await postmodle.create({
-        user: decoded.id,
+        user: req.user.id,
         imgurl: result.secure_url,
         caption: req.body.caption
     })
 
     res.status(200).json({
         message: "Post created successfully",
-        usrid: decoded.id,
+        usrid: req.user.id,
         imgurl: result.secure_url,
         caption: req.body.caption
     })
@@ -88,7 +71,7 @@ async function getpostcontroller(req, res) {
     }
 
     const posts = await postmodle.find({
-        user: decoded.id
+        user: req.user.id
     })
     res.status(200).json({
         message: "Posts fetched successfully",
@@ -117,7 +100,7 @@ async function getpostdetailcontroller(req, res) {
     }
 
     let postid = req.params.postid
-    let userid = decoded.id
+    let userid = req.user.id
 
     const post = await postmodle.findById({ _id:postid })
     if (!post) {

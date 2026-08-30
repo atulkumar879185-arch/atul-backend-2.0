@@ -1,6 +1,7 @@
 const express = require('express');
 const router=express.Router()
 const postcontroller=require('../controller/postcontroller')
+const identifyuser=require('../middleware/identifyuser')
 const multer=require('multer')
 const storage=multer.memoryStorage()
 const upload=multer({storage:storage})
@@ -13,7 +14,7 @@ const upload=multer({storage:storage})
     createpost
    /api/post/
 */
-router.post("/",upload.single('image'),postcontroller.createcontroller);
+router.post("/",upload.single('image'),identifyuser,postcontroller.createcontroller);
 
 
 /*
@@ -21,14 +22,14 @@ router.post("/",upload.single('image'),postcontroller.createcontroller);
  all post
   /api/post
   */
-router.get("/",postcontroller.getpostcontroller)
+router.get("/",identifyuser,postcontroller.getpostcontroller)
 
 
 /* GET API
   post detail
   /api/post/:id
   */
-router.get("/details/:postid",postcontroller.getpostdetailcontroller)
+router.get("/details/:postid",identifyuser,postcontroller.getpostdetailcontroller)
 
 
 
