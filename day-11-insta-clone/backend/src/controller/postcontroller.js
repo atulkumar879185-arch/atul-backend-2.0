@@ -1,5 +1,6 @@
 const postmodle = require('../model/postmodel')
 const identifyuser = require('../middleware/identifyuser')
+const postlikemodle = require('../model/postlikemodle')
 const jwt = require('jsonwebtoken')
 const cloudinary = require("cloudinary").v2;
 
@@ -9,7 +10,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
+//postcreate controller
 async function createcontroller(req, res) {
 
     if (!req.file) {
@@ -49,6 +50,7 @@ async function createcontroller(req, res) {
     })
 }
 
+//get all post controller
 async function getpostcontroller(req, res) {
 
     let token;
@@ -79,6 +81,7 @@ async function getpostcontroller(req, res) {
     })
 }
 
+//get post detail controller
 async function getpostdetailcontroller(req, res) {
     let token;
     try {
@@ -125,10 +128,44 @@ async function getpostdetailcontroller(req, res) {
 
 
 }
+
+//post like controller
+async function postlikecontroller(req, res) {
+
+    const postid=req.params.postid
+
+    const postexist =await postmodle.findById(postid)
+    if(!postexist){
+        return res.status(401).json({
+            message:"post not exist"
+        })
+    }
+
+    const alreadylike=await postlikemodle.findOne({
+        postid:postid,
+        userid:req.user.id
+    })
+    if(alreadylike){
+        return res.status(401).json({
+            message:"post already liked"
+        })
+    }
+    const newlike=await postlikemodle.create({
+        postid:postid,
+        userid:req.user.id
+    })
+    res.status(200).json({
+        message:"post liked successfully"
+    })
+
+}
+    
+
 module.exports = {
     createcontroller,
     getpostcontroller,
-    getpostdetailcontroller
+    getpostdetailcontroller,
+    postlikecontroller
 
 }
 

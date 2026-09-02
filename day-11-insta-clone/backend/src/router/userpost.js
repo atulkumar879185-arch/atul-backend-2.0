@@ -32,6 +32,13 @@ router.get("/",identifyuser,postcontroller.getpostcontroller)
 router.get("/details/:postid",identifyuser,postcontroller.getpostdetailcontroller)
 
 
+/* POST API
+  post like
+  /api/post/like/:postid
+  */
+router.post("/like/:postid",identifyuser,postcontroller.postlikecontroller)
+
+
 
 
 module.exports=router
