@@ -10,14 +10,17 @@ const followRouter=require('./router/user.follow')
 
 const cookie=require('cookie-parser');
 const dotenv=require('dotenv')
-
+const cors=require('cors')
 
 
 
 dotenv.config();
 app.use(cookie());
 app.use(express.json());
-
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 
 app.use('/api/auth',authrouter);
 app.use('/api/post',postrouter)

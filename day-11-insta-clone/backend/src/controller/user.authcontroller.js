@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
         ]
     })
     if (userexist) {
-        return res.status(400).json({
+        return res.status(409).json({
             message: "User already exists",
             detail: (userexist.email === email ? "Email already exists" : "Username already exists")
         });
@@ -56,7 +56,7 @@ const jwt = require('jsonwebtoken');
         ]
     })
     if (!userexist) {
-        return res.status(400).json({
+        return res.status(404).json({
             message: "User not found",
             detail: "Username or email is incorrect"
         })
@@ -64,7 +64,7 @@ const jwt = require('jsonwebtoken');
 
     const passwordmatch=await bcrypt.compare(password,userexist.password);
     if(!passwordmatch){
-        return res.status(400).json({
+        return res.status(401).json({
             message:"Invalid password"
         })
     }
